@@ -1,0 +1,331 @@
+# 1. Practical
+
+## Ex 1: Command line basics
+
+```{r}
+# (Außerhalb von R Studio)
+```
+
+## Ex 2: Relative Paths
+
+```{r}
+knitr::include_graphics("./images/statprogimg.png")
+```
+
+## Ex 3: git repositories
+
+```{r}
+# (Außerhalb von R Studio)
+```
+
+## Ex 4: Descriptive stats/visualisation
+
+### 1.
+
+```{r}
+install.packages("palmerpenguins")
+library(palmerpenguins)
+head(penguins)
+```
+
+### 2.
+
+```{r}
+penguins %>% 
+  filter(species == "Adelie") %>% 
+  ggplot(
+    aes(x = bill_len, y = bill_dep)) + 
+  geom_point() + 
+  labs(
+    title = "Bill Length vs. Bill Depth for Adelie Penguins", 
+    x = "Bill Length (mm)",
+    y = "Bill Depth (mm)")
+```
+
+### 3.
+
+```{r}
+penguins %>% 
+  group_by(species) %>%
+  summarise(mean_bill_length = mean(bill_len, na.rm = TRUE),
+            median_bill_length = median(bill_len, na.rm = TRUE),
+            sd_bill_length = sd(bill_len, na.rm = TRUE))
+```
+
+### 4.
+
+```{r}
+penguins %>%
+  pivot_longer(cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g), 
+               names_to = "feature",
+               values_to = "value") %>%
+  ggplot(aes(x = species, y = value)) +
+  geom_boxplot() +
+  facet_wrap(~ feature, scales = "free_y") +
+  labs(title = "Boxplots of Penguin Features by Species",
+       x = "Species",
+       y = "Value")
+```
+
+```{r}
+penguins
+```
+
+```{r}
+c1 <- c(1, 2, 3)
+c2 <- c(2.0, 3.5, 4.1)
+df1 <- data.frame(c1, c2)
+ggplot(data = df1, aes(x = c1, y = c2)) + geom_smooth(method = "lm") 
+```
+
+# 2. Practical
+
+## Ex 1: Naming Functions
+
+```{r}
+# (mündlich)
+```
+
+## Ex 2: Using Functions to Package Code
+
+### 1.
+
+```{r}
+# All tasks combined in one function.
+pengu_property_plotter <- function(df, penguspecies, x_val, y_val) {
+  if (!(penguspecies %in% c("Adelie", "Chinstrap", "Gentoo"))) {stop(glue::glue("{penguspecies} haben wir leider nicht :("))}
+  if (!(x_val %in% names(penguins))) {stop(glue::glue("Noch nie von {x_val} gehört! :("))}
+  if (!(y_val %in% names(penguins))) {stop(glue::glue("Noch nie von {y_val} gehört! :("))}
+  if (!is.numeric(df[[x_val]])) {stop(glue::glue("{x_val} ist wohl nicht numerisch! :("))}
+  if (!is.numeric(df[[y_val]])) {stop(glue::glue("{y_val} ist wohl nicht numerisch! :("))}
+  df %>% 
+    filter(species == penguspecies) %>%
+    ggplot(aes(x = .data[[x_val]], y = .data[[y_val]])) + 
+    geom_point() + 
+    labs(title = glue("{y_val} vs. {x_val} for {penguspecies} Penguins")) 
+    
+}
+pengu_property_plotter(penguins, "Adelie", "bill_len", "bill_dep")
+```
+
+### 2.
+
+```{r}
+# The function takes a data frame, penguin species, an x value and a y value. First it uses the given data frame and filters the column "species" for our given penguin species. It then plots a scatterplot given two columns that we assigned as the x and y variable. The title of the plot adapts to our chosen argument values.
+
+```
+
+### 3.
+
+```{r}
+# If we enter an invalid species, the plot is still formed, but the canvas is empty.
+# If we enter en invalid x variable, the code fails
+# If we enter a non-numeric column for the x variable the code still works and we recieve the distributions of the y variable for every category of the x variable.
+```
+
+### 4.
+
+```{r}
+# All tasks split up into smaller functions.
+species_filter <- function(df, penguspecies) { 
+  df %>% filter(species == penguspecies)
+}
+
+species_mapper <- function(df, x_val, y_val) {
+  df %>% ggplot(aes(x = .data[[x_val]], y = .data[[y_val]])) + geom_point()
+}
+
+species_labeler <- function(x_val, y_val, penguspecies) {
+  labs(title = glue("{y_val} vs. {x_val} for {penguspecies} Penguins"))}
+
+species_filter(penguins, "Adelie") %>% 
+  species_mapper("bill_len", "bill_dep") + 
+  species_labeler("bill_len", "bill_dep", "Adelie")
+```
+
+## Ex 3: Error Handling
+
+### 1.
+
+```{r}
+# (Individuelle Fehlermeldungen hinzugefügt)
+```
+
+## Ex 4: Recursion and Iteration
+
+```{r}
+fib_iterative <- function(power) {2 ^ power}
+fib_iterative(30)
+
+fib_recursive <- function(power) {
+  previous_result <- 2 ^ (power - 1) 
+  return(2 * previous_result)
+}
+fib_recursive(30)
+```
+
+## Ex 5: Refactoring
+
+### 1.
+
+```{r}
+library(tidyverse)
+library(glue)
+# Repetitions:
+# Every species is handeled individually for both mean bill and mean mass.
+# This also applies to the output, where every possible output is listed as an ifelse chunk.
+
+# Distinct ideas:
+# We want to choose a penguin species and recieve its mean bill length and mean mass
+
+summarise_species <- function(species_name) {
+  mean_bill <- mean(penguins$bill_length_mm[penguins$species == species_name], na.rm = TRUE)
+  mean_mass <- mean(penguins$body_mass_g[penguins$species == species_name], na.rm = TRUE)
+  cat("Species:", species_name, "\n")
+  cat("Length :", mean_bill, "\n")
+  cat("Mass   :", mean_mass, "\n")
+}
+summarise_species("Gentoo")
+```
+
+### 2.
+
+```{r}
+penguin_report <- function(species_name) {
+  
+# Funktion 1: Laden und säubern des Datensatzes.
+ pengu_loader_cleaner <- function() {
+  library(palmerpenguins)
+  library(tidyverse)
+  pengu_data <- penguins
+  pengu_data <- pengu_data[!is.na(pengu_data$bill_length_mm) & !is.na (pengu_data$body_mass_g),]
+  return(pengu_data)
+ }
+ 
+# Funktion 2: Filter für den Datensatz, jetzt ist es für jede Species individuell.
+ pengu_filter <- function(species_name) {
+  filtered_data <- pengu_clean %>% filter(species ==   species_name)
+  return(filtered_data)
+ }
+ 
+# Funktion 3: Zusammenfassung wichtiger Informationen für die gewählte Species.
+  pengu_summariser <- function(species_name) {
+   filtered_data <- pengu_clean %>% filter(species == species_name)
+   summarised_data <- filtered_data 
+   cat("Ausgewählte Species:", species_name, "\n")
+   cat("n =", nrow(filtered_data), "\n")
+   cat("mean bill length:", mean(filtered_data$bill_length_mm), "\n")
+   cat("mean body mass:", mean(filtered_data$body_mass_g), "\n")
+  }
+  
+# Funktion 4: Abbildung der gefilterten Daten in einem Streudiagramm
+  pengu_plotter <- function(species_name) {
+   filtered_data <- pengu_clean %>% filter(species == species_name)
+   plot <- ggplot(data = filtered_data, aes(x = bill_length_mm, y = body_mass_g)) + 
+    geom_point(color = "magenta") + 
+    theme_dark()
+    labs(title = paste("Bill length vs. body mass -", species_name))
+   return(plot)
+  }
+  
+# Jetzt werden alle Funktionen zusammengesetzt
+  pengu_clean <- pengu_loader_cleaner()
+  pengu_filtered <- pengu_filter(species_name)
+  pengu_summariser(species_name)
+  my_plot <- pengu_plotter(species_name)
+  print(my_plot)
+}
+
+# Erfolgreicher Testversuch :)
+penguin_report("Gentoo")
+```
+
+# 3. Practical
+
+## Ex 1: Using the LLM deliberately
+
+```{r}
+library(palmerpenguins)
+library(dplyr)
+
+mean_mass_by <- function(data, group_var) {
+  data |>
+    group_by(group_var) |>
+    summarise(mean_mass = mean(body_mass_g, na.rm = TRUE))
+}
+
+mean_mass_by(penguins, species)
+# I expect this code to fail, because group_var is a function-specific variable and does not appear to be a column from the penguins data set, meaning there is no column that the observations can be grouped by.
+
+```
+
+```{r}
+# Fixed version
+library(palmerpenguins)
+library(dplyr)
+
+mean_mass_by <- function(data, group_var) {
+  data |>
+    group_by({{ group_var }}) |>
+    summarise(mean_mass = mean(body_mass_g, na.rm = TRUE))
+}
+mean_mass_by(penguins, island)
+
+```
+
+## Ex 2: Locating errors in R code
+
+```{r}
+# 1. 
+library(palmerpenguins)
+library(dplyr)
+ 
+summarise_species <- function(data) {
+  data |>
+    group_by(species) |>
+    summarise(mean_mass = mean_body_mass(body_mass_g))
+}
+ 
+mean_body_mass <- function(x) {
+  mean(x, na.rm = TRUE)   
+}
+ 
+summarise_species(penguins)
+
+# 2. There is a typo near the end, where TRUE is written as TREU.
+```
+
+## Ex 3: browser()
+
+```{r}
+my_factorial <- function(n) {
+  stopifnot(n >= 0, n == as.integer(n))
+  if (n == 1) return(1)
+  return(n * my_factorial(n - 1))
+}
+
+my_factorial(5) 
+```
+
+## Ex 4: debug() and debugonce()
+
+```{r}
+standardise <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+standardise(c(1, 2, 3, 4, 5))   # fine
+standardise(c(1, 2, NA, 4, 5))  # returns all NAs — why?
+```
+
+## Ex 5: Debugging Quarto
+
+```{r}
+# Done outside this document.
+```
+
+# 4. Practical
+
+```{r}
+
+```
