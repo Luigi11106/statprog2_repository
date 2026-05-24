@@ -1,0 +1,32 @@
+Week 1:
+- The introduction to git was very overwhelming for me. 
+At first I just copied the given git commands and looked at what happened.
+I was not able to make a lot of connections as to what the code I typed actually did.
+The data visualisation from the first practical was a lot more reassuring because it went back to concepts in RStudio that we had already covered in the last module.
+My problems with git meant that I was not able to practice with git outside the given few commands.
+- A big struggle was setting up the SSH key from git, but with the help from AI I was able to get it done.
+- I am not sure what is meant with "intentional friction", but it seams that version control is build up in a way to cause errors and overcomplication.
+
+Week 2:
+- This week the practical went a lot better (mostly because we did more RStudio and less git).
+- I learned to work with some operators that I have not used much before, mostly "!" and "%in%".
+- My favourite thing I learned was the glue package and how to write condtional error messages that reflect the variable that was supposed to be used in the function
+- For this the AI is actually very helpful because it explained to me new packages that I had never heard of before
+
+Week 3: 
+- This week we intentionaly brought LLM evaluation into our coding and in the beginning it did not work out for me.
+- Even though I was able to find the location of some errors, I could not come up with a solution to fix the code so that it would do what it was supposed to do.
+- Thanks to AI, I now know that [[variable_1]] can be used with the group_by function to the change the column that is supposed to be grouped by its values.
+- The other error function was very easy to debug, only a small typo had to be fixed.
+
+Week 4: 
+- Even though I managed to get the tasks done, I unfortunately had some casualties in the process.
+- I was able to push my StatProg.qmd Task File to github, but by changing its path, I lost my previous commits to the file :(.
+- At least the document is now set up for git hub
+- I just have no luck with git or github
+- My bright spot this week was a nice complicated git command from the AI that gives me a nice branch like git log history over my file
+
+Week 5:
+- Today I figured out that tracking your task file and explaining what you did there is not what was meant with "reflection log" 
+- This means that everything so far was a brief recollection of weeks 1 to 4 based on my memories and my well structured StatProg.qmd file
+- At least what is left from my commit history... well.
