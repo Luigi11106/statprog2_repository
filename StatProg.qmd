@@ -1,4 +1,4 @@
-# 1. Practical grr franzosen
+# 1. Practical grr deutsche
 
 ## Ex 1: Command line basics
 
