@@ -1,4 +1,4 @@
-# 1. Practical
+# 1. Practical grr franzosen
 
 ## Ex 1: Command line basics
 
